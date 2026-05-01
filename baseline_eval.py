@@ -18,7 +18,7 @@ from scorer import score_letter_answer
 
 RESULTS_DIR    = "results"
 OUTPUT_FILE    = os.path.join(RESULTS_DIR, "baseline_results.json")
-MAX_NEW_TOKENS = 512
+MAX_NEW_TOKENS = 1024   # 512 was truncating verbose 5/7-object reasoning
 
 
 def pick_device_and_dtype():
@@ -58,7 +58,8 @@ def main():
             out = model.generate(
                 **inputs,
                 max_new_tokens=MAX_NEW_TOKENS,
-                do_sample=False,
+                do_sample=True,
+                top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
             )
 
