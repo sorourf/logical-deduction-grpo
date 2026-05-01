@@ -1,11 +1,10 @@
+# torch is provided by the RunPod PyTorch template — don't pin or reinstall.
+# Locally, install with: pip install torch
 transformers==4.51.3
-torch==2.7.1
-pandas
-torchvision==0.22.1
 peft==0.15.2
-# reasoning-gym==0.1.22  # Python 3.10+ only; not used after switching to BIG-bench
-rich==14.0.0
 datasets>=2.19.0
 jinja2>=3.1
 accelerate>=0.30
+rich==14.0.0
 numpy
+pandas
