@@ -29,20 +29,20 @@ from prompt_formatter import format_example
 # ---- hyperparameters --------------------------------------------------------
 
 BATCH_PROMPTS    = 2          # B: number of distinct prompts per step
-GROUP_SIZE       = 4          # G: rollouts sampled per prompt
-MAX_NEW_TOKENS   = 512        # cap on rollout length
+GROUP_SIZE       = 8          # G: rollouts sampled per prompt
+MAX_NEW_TOKENS   = 1024        # cap on rollout length
 TEMPERATURE      = 1.0
 TOP_P            = 0.95
 
-LEARNING_RATE    = 5e-5
+LEARNING_RATE    = 1e-5
 CLIP_EPSILON     = 0.2
-NUM_STEPS        = 200
+NUM_STEPS        = 400
 LOG_EVERY        = 1
 SAVE_EVERY       = 50
 LOSS_VARIANT     = "grpo"     # "grpo" | "dr_grpo" | "bnpo"
 
 OUTPUT_DIR       = "checkpoints"
-LOG_FILE         = "results/training_log.json"
+LOG_FILE         = "results/training_log1.json"
 SEED             = 0
 
 
