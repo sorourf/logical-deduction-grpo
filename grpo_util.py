@@ -1,14 +1,15 @@
 import torch
-from reasoning_gym import get_score_answer_fn
 import numpy as np
 import re
+
+from scorer import score_letter_answer
 
 FORMAT_REWARD_WEIGHT = 0.15
 CORRECTNESS_REWARD_WEIGHT = 0.85
 MAX_TOKENS = 500 # used for dr_grpo loss
 
-def calculate_logits(llm, full_responses, attention_masks):
-    logits = llm(input_ids=full_responses, attention_masks=attention_masks).logits
+def calculate_logits(llm, full_responses, attention_mask):
+    logits = llm(input_ids=full_responses, attention_mask=attention_mask).logits
     log_probs = torch.log_softmax(logits, dim=-1)
 
     selected_log_probs = torch.gather(
@@ -62,13 +63,12 @@ def calculate_format_reward(response):
         return format_reward
 
 
-def calculate_correctness_reward(response, validation_object):
-    score_fn = get_score_answer_fn(validation_object["metadata"]["source_dataset"])
-    return score_fn(response, validation_object)
+def calculate_correctness_reward(response, gold_letter):
+    """1.0 if the response's <answer> matches the gold letter, else 0.0."""
+    return score_letter_answer(response, gold_letter)
 
 
-def calculate_rewards(batch_responses, validation_objects):
-
+def calculate_rewards(batch_responses, gold_letters):
     # calculate formatting rewards
     format_rewards = np.array(
         [calculate_format_reward(response) for response in batch_responses]
@@ -77,8 +77,8 @@ def calculate_rewards(batch_responses, validation_objects):
     # calculate if answer is correct
     correctness_rewards = np.array(
         [
-            calculate_correctness_reward(extract_answer(response), val_obj)
-            for val_obj, response in zip(validation_objects, batch_responses)
+            calculate_correctness_reward(response, gold)
+            for gold, response in zip(gold_letters, batch_responses)
         ]
     )
 
