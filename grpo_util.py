@@ -9,13 +9,20 @@ CORRECTNESS_REWARD_WEIGHT = 0.85
 MAX_TOKENS = 500 # used for dr_grpo loss
 
 def calculate_logits(llm, full_responses, attention_mask):
+    """
+    Per-token log-probabilities of the *actually realized* next tokens.
+
+    Returns tensor of shape (batch, seq_len-1) where entry [b, t] is
+        log P( full_responses[b, t+1] | full_responses[b, :t+1] )
+    """
     logits = llm(input_ids=full_responses, attention_mask=attention_mask).logits
-    log_probs = torch.log_softmax(logits, dim=-1)
-
+    # logits[:, t, :] predicts token at position t+1; drop the last position.
+    shifted_logits = logits[:, :-1, :]
+    shifted_targets = full_responses[:, 1:]                                   # (B, L-1)
+    log_probs = torch.log_softmax(shifted_logits, dim=-1)                     # (B, L-1, V)
     selected_log_probs = torch.gather(
-        input=log_probs, dim=2, index=full_responses.unsqueeze(-1)
-    ).squeeze(-1)
-
+        log_probs, dim=2, index=shifted_targets.unsqueeze(-1)
+    ).squeeze(-1)                                                             # (B, L-1)
     return selected_log_probs
 
 
