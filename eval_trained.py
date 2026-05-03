@@ -16,9 +16,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from prompt_formatter import MODEL_NAME, format_example
 from scorer import score_letter_answer
 
-ADAPTER_DIR    = "checkpoints/final"
+ADAPTER_DIR    = "checkpoints/step_250"
 RESULTS_DIR    = "results"
-OUTPUT_FILE    = os.path.join(RESULTS_DIR, "post_train_results.json")
+OUTPUT_FILE    = os.path.join(RESULTS_DIR, "post_train_results_step250.json")
 MAX_NEW_TOKENS = 1024
 
 
